@@ -1,4 +1,5 @@
 import os
+from PIL import Image
 from skimage import io, transform
 from skimage.filters import gaussian
 import torch
@@ -55,17 +56,16 @@ def save_output(image_name,pred,d_dir,sigma=2,alpha=0.5):
     ## 2. fuse these orignal image and the portrait with certain weight: alpha
     alpha = alpha
     im_comp = image*alpha+pd*(1-alpha)
-
+    im = Image.fromarray(np.round(im_comp).astype(np.uint8))
     print(im_comp.shape)
-
-
     img_name = image_name.split(os.sep)[-1]
     aaa = img_name.split(".")
     bbb = aaa[0:-1]
     imidx = bbb[0]
     for i in range(1,len(bbb)):
         imidx = imidx + "." + bbb[i]
-    io.imsave(d_dir+'/'+imidx+'_sigma_' + str(sigma) + '_alpha_' + str(alpha) + '_composite.png',im_comp)
+    dst = d_dir+'/'+imidx+'_sigma_' + str(sigma) + '_alpha_' + str(alpha) + '_composite.png'
+    im.save(dst)
 
 def main():
 
